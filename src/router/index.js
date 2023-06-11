@@ -57,8 +57,10 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
     const token = store.getters['user/getToken']
+    const expiredMillis = store.getters['user/getExpirationMillis']
+    const currentMillis = Date.now()
     if (to.matched.some(record => record.meta.requireAuth)) {
-        if (token != "") {
+        if (token != "" && expiredMillis >= currentMillis) {
             next()
         } else {
             next({ name: 'login' })

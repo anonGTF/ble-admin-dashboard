@@ -30,12 +30,12 @@ export default {
   },
   methods: {
     async logout() {
+      this.$store.dispatch('user/reset')
       await axios.post(`${BASE_URL}/auth/logout`)
       this.$router.replace({ path: '/login' })
     }
   },
   async mounted() {
-
     const user = this.$store.getters['user/getUser']
     this.name = user.name
     this.nip = user.nip

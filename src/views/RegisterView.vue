@@ -110,9 +110,11 @@ methods: {
         const refreshToken = response.data.content.tokens.refreshToken.token
         const token = { accessToken, refreshToken }
         const user = response.data.content.user
+        const expiredMillis = response.data.content.tokens.accessToken.expirationDateValue
 
         this.$store.dispatch('user/saveToken', { token })
         this.$store.dispatch('user/saveUser', { user })
+        this.$store.dispatch('user/saveExpirationMillis', { expiredMillis })
 
         this.$router.replace({ path: '/' })
     } catch (error) {

@@ -3,6 +3,7 @@ import axios from "axios"
 function state() {
   return {
       token: null,
+      expiredMillis: 0,
       user: null
   }
 }
@@ -13,6 +14,9 @@ const mutations = {
   },
   setUser(state, { user }) {
     state.user = user
+  },
+  setExpirationMillis(state, { expiredMillis }) {
+    state.expiredMillis = expiredMillis
   }
 }
 
@@ -22,7 +26,10 @@ const getters = {
   },
   getUser(state) {
     return state.user;
-}
+  },
+  getExpirationMillis(state) {
+    return state.expiredMillis
+  }
 }
 
 const actions = {
@@ -47,6 +54,27 @@ const actions = {
       commit('setUser', {
           user: null
       })
+  },
+  saveExpirationMillis({ commit }, { expiredMillis }) {
+    commit('setExpirationMillis', {
+        expiredMillis
+    })
+  },
+  resetExpirationMillis({ commit }) {
+      commit('setExpirationMillis', {
+          expiredMillis: 0
+      })
+  },
+  reset({ commit }) {
+    commit('setUser', {
+      user: null
+    })
+    commit('setToken', {
+      token: null
+    })
+    commit('setExpirationMillis', {
+      expiredMillis: 0
+    })
   }
 }
 
