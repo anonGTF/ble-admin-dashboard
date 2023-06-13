@@ -87,6 +87,7 @@ export default {
   },
 
   async mounted() {
+    console.log(axios.defaults);
     const response = await axios.get(`${BASE_URL}/private/devices`)
     response.data.content.devices.forEach(device => {
       this.items.push({

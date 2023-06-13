@@ -9,6 +9,7 @@ import WeeklyReportView from '@/views/WeeklyReportView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import ManageUserView from '@/views/ManageUserView.vue'
 import store from '../store'
+import axios from 'axios'
 
 const routes = [
     {
@@ -17,7 +18,7 @@ const routes = [
         component: LoginView
     },
     {
-        path: '/BJqIzJc07Pzgcxh6AnZP',
+        path: '/register',
         name: 'register',
         component: RegisterView
     },
@@ -67,6 +68,8 @@ router.beforeEach(async (to, from, next) => {
     const currentMillis = Date.now()
     if (to.matched.some(record => record.meta.requireAuth)) {
         if (token != "" && expiredMillis >= currentMillis) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token.accessToken}`;
+            axios.defaults.headers['x-refresh-token'] = token.refreshToken
             next()
         } else {
             next({ name: 'login' })

@@ -76,15 +76,17 @@ export default {
         })
 
         const error = response.data.error
+        const user = response.data.content.user
 
         if (error != null) {
           throw Error(error.message)
+        } else if (!user.is_verified) {
+          throw Error("User belum terverifikasi!")
         }
 
         const accessToken = response.data.content.tokens.accessToken.token
         const refreshToken = response.data.content.tokens.refreshToken.token
         const token = { accessToken, refreshToken }
-        const user = response.data.content.user
         const expiredMillis = response.data.content.tokens.accessToken.expirationDateValue
 
         this.$store.dispatch('user/saveToken', { token })

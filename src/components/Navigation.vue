@@ -84,9 +84,14 @@ export default {
   },
   methods: {
     async logout() {
-      this.$store.dispatch('user/reset')
-      await axios.post(`${BASE_URL}/auth/logout`)
-      this.$router.replace({ path: '/login' })
+      try {
+        this.$store.dispatch('user/reset')
+        await axios.post(`${BASE_URL}/auth/logout`)
+      } catch (error) {
+        console.log(error)
+      } finally {
+        this.$router.replace({ path: '/login' })
+      }
     }
   },
   async mounted() {

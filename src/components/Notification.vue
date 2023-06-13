@@ -10,7 +10,7 @@
       rounded="pill"
       content-class="px-10 text-body-2"
     >
-      <span class="text--blue-darken-2 font-weight-black">MyTensi: </span>
+      <span class="text--blue-darken-2 font-weight-black">Admin: </span>
       <span>{{ message }}</span>
 
       <template v-slot:action="{ attrs }">
@@ -33,7 +33,7 @@
       rounded="pill"
       content-class="white--text px-10"
     >
-      <span class="font-weight-black">Gerak Lurus: </span>
+      <span class="font-weight-black">Admin: </span>
       <span>{{ message }}</span>
 
       <template v-slot:action="{ attrs }">

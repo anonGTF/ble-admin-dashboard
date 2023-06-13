@@ -106,17 +106,23 @@ methods: {
           throw Error(error.message)
         }
 
-        const accessToken = response.data.content.tokens.accessToken.token
-        const refreshToken = response.data.content.tokens.refreshToken.token
-        const token = { accessToken, refreshToken }
-        const user = response.data.content.user
-        const expiredMillis = response.data.content.tokens.accessToken.expirationDateValue
+        // const accessToken = response.data.content.tokens.accessToken.token
+        // const refreshToken = response.data.content.tokens.refreshToken.token
+        // const token = { accessToken, refreshToken }
+        // const user = response.data.content.user
+        // const expiredMillis = response.data.content.tokens.accessToken.expirationDateValue
 
-        this.$store.dispatch('user/saveToken', { token })
-        this.$store.dispatch('user/saveUser', { user })
-        this.$store.dispatch('user/saveExpirationMillis', { expiredMillis })
+        // this.$store.dispatch('user/saveToken', { token })
+        // this.$store.dispatch('user/saveUser', { user })
+        // this.$store.dispatch('user/saveExpirationMillis', { expiredMillis })
 
-        this.$router.replace({ path: '/' })
+        // this.$router.replace({ path: '/' })
+        const notif = {
+          isShow: true,
+          isError: false,
+          message: "Berhasil mendaftarkan pengguna! Silahkan hubungi Admin untuk verifikasi akun"
+        }
+        this.$store.dispatch('notification/showNotification', notif)
     } catch (error) {
       const dataError = {
         isShow: true,
