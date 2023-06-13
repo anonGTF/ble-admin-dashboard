@@ -7,6 +7,7 @@ import AllDataView from '@/views/AllDataView.vue'
 import DailyReportView from '@/views/DailyReportView.vue'
 import WeeklyReportView from '@/views/WeeklyReportView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import ManageUserView from '@/views/ManageUserView.vue'
 import store from '../store'
 
 const routes = [
@@ -44,6 +45,11 @@ const routes = [
                 path: 'profile',
                 name: 'Profile',
                 component: ProfileView
+            },
+            {
+                path: 'users',
+                name: 'Manage Users',
+                component: ManageUserView
             },
         ]
     }

@@ -22,4 +22,8 @@ export const getLastDateOfWeek = () => {
   return lastDateOfWeek
 }
 
+/* LOCAL */
 export const BASE_URL = "http://127.0.0.1:3001/api/v1"
+
+/* PRODUCTION */
+// export const BASE_URL = "https://ble-backend-production.up.railway.app/api/v1"

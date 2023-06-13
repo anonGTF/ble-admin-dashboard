@@ -52,11 +52,10 @@ export default {
             value: 'index',
           },
           { text: 'Nama', value: 'name' },
-          { text: 'UUID', value: 'uuid' },
+          { text: 'Mac Address', value: 'mac' },
           { text: 'Major', value: 'major' },
           { text: 'Minor', value: 'minor' },
-          { text: 'Tanggal Masuk', value: 'tanggalMasuk' },
-          { text: 'Tanggal Keluar', value: 'tanggalKeluar' },
+          { text: 'Nomor Rak', value: 'rackNo' }
       ],
       items: [],
       search: ""
@@ -92,12 +91,11 @@ export default {
     response.data.content.devices.forEach(device => {
       this.items.push({
         id: device.id,
-        uuid: device.uuid,
+        mac: device.mac,
         name: device.name,
         major: device.major,
         minor: device.minor,
-        tanggalMasuk: "-",
-        tanggalKeluar: "-"
+        rackNo: device.rack_no,
       })
     })
   }

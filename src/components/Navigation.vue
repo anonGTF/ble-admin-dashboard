@@ -13,7 +13,7 @@
           light
           color="#4a47d6">
           <v-list-item
-            v-for="item in items"
+            v-for="item in itemsGuarded"
             :key="item.title"
             link
             ripple
@@ -72,6 +72,16 @@ export default {
     name: "",
     avatar: "https://firebasestorage.googleapis.com/v0/b/mytensi-fc11e.appspot.com/o/users%2F1_W35QUSvGpcLuxPo3SRTH4w.png?alt=media&token=783d86c9-49af-44ed-906e-04eb8ae17695"
   }),
+  computed: {
+    itemsGuarded({ items }) {
+      const user = this.$store.getters['user/getUser']
+      if (user.role == "ADMIN") {
+        return [...items, { title: 'Manage Pengguna', icon: 'mdi-account-group', link: '/users' }]
+      } else {
+        return items
+      }
+    }
+  },
   methods: {
     async logout() {
       this.$store.dispatch('user/reset')

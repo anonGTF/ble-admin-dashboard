@@ -54,7 +54,7 @@ export default {
           },
           { text: 'Tipe', value: 'type' },
           { text: 'Nama', value: 'name' },
-          { text: 'UUID', value: 'uuid' },
+          { text: 'Mac Address', value: 'mac' },
           { text: 'Major/Minor', value: 'majorMinor' },
           { text: 'PIC', value: 'username' },
           { text: 'Tanggal', value: 'date' },
@@ -105,7 +105,7 @@ export default {
       this.items.push({
         id: log.id,
         type: log.type,
-        uuid: log.bleDevice.uuid,
+        mac: log.bleDevice.mac,
         name: log.bleDevice.name,
         majorMinor: `${log.bleDevice.major}/${log.bleDevice.minor}`,
         username: log.user.name,
