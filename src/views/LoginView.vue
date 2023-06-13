@@ -80,8 +80,6 @@ export default {
 
         if (error != null) {
           throw Error(error.message)
-        } else if (!user.is_verified) {
-          throw Error("User belum terverifikasi!")
         }
 
         const accessToken = response.data.content.tokens.accessToken.token
@@ -98,7 +96,7 @@ export default {
         const dataError = {
           isShow: true,
           isError: true,
-          message: error
+          message: error.response.data.error.message
         }
         this.$store.dispatch('notification/showNotification', dataError)
       }
