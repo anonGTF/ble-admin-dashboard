@@ -30,6 +30,8 @@
       :items="itemsForTable"
       :items-per-page="10"
       :search="search"
+      :loading="isLoading"
+      loading-text="Memuat data..."
       class="elevation-1">
     </v-data-table>
   </div>
@@ -39,11 +41,12 @@
 import axios from "axios";
 import { format } from "date-fns";
 import jsPDF from 'jspdf'
-import { BASE_URL, getTomorrow } from "../utils";
+import { utils } from '@/mixins'
+import { BASE_URL, getTomorrow, formatDate } from "../utils";
 
 export default {
   name: 'DailyReportView',
-
+  mixins: [utils],
   data() {
     return {
       headers: [
@@ -94,23 +97,26 @@ export default {
     const todayStr = format(today, "dd/MM/yyyy")
     const tomorrowStr = format(tomorrow, "dd/MM/yyyy")
 
-    const response = await axios.get(`${BASE_URL}/private/logs`, {
-      params: {
-        start: todayStr,
-        end: tomorrowStr
+    await this.safeCallApi({
+      apiCall: axios.get(`${BASE_URL}/private/logs`, {
+        params: {
+          start: todayStr,
+          end: tomorrowStr
+        }
+      }),
+      onSuccess: ({ content, error }) => {
+          content.logs.forEach(log => {
+          this.items.push({
+            id: log.id,
+            type: log.type,
+            mac: log.bleDevice.mac,
+            name: log.bleDevice.name,
+            majorMinor: `${log.bleDevice.major}/${log.bleDevice.minor}`,
+            username: log.user.name,
+            date: formatDate(log.date)
+          })
+        })
       }
-    })
-
-    response.data.content.logs.forEach(log => {
-      this.items.push({
-        id: log.id,
-        type: log.type,
-        mac: log.bleDevice.mac,
-        name: log.bleDevice.name,
-        majorMinor: `${log.bleDevice.major}/${log.bleDevice.minor}`,
-        username: log.user.name,
-        date: log.date
-      })
     })
   }
 };

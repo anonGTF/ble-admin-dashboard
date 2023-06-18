@@ -15,5 +15,25 @@ export const utils = {
       notifMessage() {
           return this.$store.getters['notification/getNotifMessage'];
       }
+  },
+
+  methods: {
+    async safeCallApi({ apiCall, onSuccess, onError = () => {} }) {
+        this.$store.dispatch('process/showProcess')
+        try {
+          const response = await apiCall
+          onSuccess(response.data)  
+        } catch (error) {
+            onError(error)
+            const dataError = {
+                isShow: true,
+                isError: true,
+                message: error.response.data.error.message
+            }
+            this.$store.dispatch('notification/showNotification', dataError)
+        } finally {
+            this.$store.dispatch('process/removeProcess')
+        }
+    }
   }
 }

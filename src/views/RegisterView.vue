@@ -13,49 +13,51 @@
           <p class="text-h3 font-weight-bold">Registrasi Akun</p>
           <p>Isi data di bawah untuk registrasi akunmu</p>
           <p>Sudah punya akun? <router-link to="/login" class="text--blue-darken-2">Login!</router-link></p>
-          <v-text-field
-            v-model="name"
-            label="Nama Lengkap"
-            outlined
-            dense
-            hide-details
-            class="mb-3"
-          />
-          <v-text-field
-            v-model="nip"
-            label="NIP"
-            outlined
-            dense
-            hide-details
-            class="mb-3"
-          />
-          <v-text-field
-            v-model="email"
-            label="Email"
-            outlined
-            dense
-            type="email"
-            hide-details
-            class="mb-3"
-          />
-          <v-text-field
-            v-model="password"
-            label="Password"
-            outlined
-            dense
-            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="() => (showPassword = !showPassword)"
-            :type="showPassword ? 'text' : 'password'"
-          />
-          <v-btn 
-              color="blue darken-2"
-              elevation="2"
-              class="white--text"
-              :loading="isLoading"
-              @click="register"
-          >
-            Register
-          </v-btn>
+          <form @submit.prevent="register">
+            <v-text-field
+              v-model="name"
+              label="Nama Lengkap"
+              outlined
+              dense
+              hide-details
+              class="mb-3"
+            />
+            <v-text-field
+              v-model="nip"
+              label="NIP"
+              outlined
+              dense
+              hide-details
+              class="mb-3"
+            />
+            <v-text-field
+              v-model="email"
+              label="Email"
+              outlined
+              dense
+              type="email"
+              hide-details
+              class="mb-3"
+            />
+            <v-text-field
+              v-model="password"
+              label="Password"
+              outlined
+              dense
+              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              @click:append="() => (showPassword = !showPassword)"
+              :type="showPassword ? 'text' : 'password'"
+            />
+            <v-btn 
+                type="submit"
+                color="blue darken-2"
+                elevation="2"
+                class="white--text"
+                :loading="isLoading"
+            >
+              Register
+            </v-btn>
+          </form>
         </v-container>
       </v-col>
       <v-col class='banner blue darken-2 white--text pl-16 pt-16 d-none d-md-block'>
@@ -92,45 +94,26 @@ data: () => ({
 }),
 methods: {
   async register() {
-    try {
-      const response = await axios.post(`${BASE_URL}/auth/register`, {
+    await this.safeCallApi({
+      apiCall: axios.post(`${BASE_URL}/auth/register`, {
           email: this.email,
           password: this.password,
           name: this.name,
           nip: this.nip
-        })
-
-        const error = response.data.error
-
-        if (error != null) {
+        }),
+      onSuccess: ({ content, error }) => {
+        if (error) {
           throw Error(error.message)
         }
 
-        // const accessToken = response.data.content.tokens.accessToken.token
-        // const refreshToken = response.data.content.tokens.refreshToken.token
-        // const token = { accessToken, refreshToken }
-        // const user = response.data.content.user
-        // const expiredMillis = response.data.content.tokens.accessToken.expirationDateValue
-
-        // this.$store.dispatch('user/saveToken', { token })
-        // this.$store.dispatch('user/saveUser', { user })
-        // this.$store.dispatch('user/saveExpirationMillis', { expiredMillis })
-
-        // this.$router.replace({ path: '/' })
         const notif = {
           isShow: true,
           isError: false,
           message: "Berhasil mendaftarkan pengguna! Silahkan hubungi Admin untuk verifikasi akun"
         }
         this.$store.dispatch('notification/showNotification', notif)
-    } catch (error) {
-      const dataError = {
-        isShow: true,
-        isError: true,
-        message: error
       }
-      this.$store.dispatch('notification/showNotification', dataError)
-    }
+    })
   }
 }
 }

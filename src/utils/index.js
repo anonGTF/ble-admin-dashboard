@@ -1,7 +1,7 @@
 import { format, addDays, startOfWeek, endOfWeek } from "date-fns"
 
 export const formatDate = (date) => {
-  return format(date, 'HH:mm dd MMMM yyyy')
+  return format(new Date(date), 'dd MMMM yyyy HH:mm')
 }
 
 export const getTomorrow = () => {

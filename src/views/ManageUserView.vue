@@ -10,6 +10,12 @@
           append-icon="mdi-magnify"
         ></v-text-field>
       </div>
+      <v-progress-circular
+        v-show="isLoading"
+        indeterminate
+        color="primary"
+        class="ml-2"
+      ></v-progress-circular>
     </div>
 
     <v-data-table
@@ -18,6 +24,8 @@
       :items="itemsForTable"
       :items-per-page="10"
       :search="search"
+      :loading="isLoading"
+      loading-text="Memuat data..."
       class="elevation-1">
 
       <template v-slot:item.action="{ item }">
@@ -71,10 +79,11 @@
 <script>
 import axios from "axios";
 import { BASE_URL } from "../utils";
-
+import { utils } from "../mixins";
 
 export default {
   name: "ManageUserView",
+  mixins: [utils],
   data() {
     return {
       headers: [
@@ -107,27 +116,38 @@ export default {
 
   methods: {
     async verify(item) {
-      console.log(item);
-      await axios.post(`${BASE_URL}/private/users/verify`, {
-        id: item.id
+      this.safeCallApi({
+        apiCall: axios.post(`${BASE_URL}/private/users/verify`, {
+          id: item.id
+        }),
+        onSuccess: async (data) => {
+          await this.setup()
+        }
       })
-      await this.setup()
     },
     async makeAdmin(item) {
-      await axios.post(`${BASE_URL}/private/users/update`, {
+      this.safeCallApi({
+        apiCall: axios.post(`${BASE_URL}/private/users/update`, {
         id: item.id,
         name: item.name,
         role: "ADMIN",
         nip: item.nip
+      }),
+        onSuccess: async (data) => {
+          await this.setup()
+        }
       })
-      await this.setup()
     },
     async deleteUser() {
-      await axios.post(`${BASE_URL}/private/users/remove`, {
-        id: this.selectedItem.id
+      this.safeCallApi({
+        apiCall: axios.post(`${BASE_URL}/private/users/remove`, {
+          id: this.selectedItem.id
+        }),
+        onSuccess: async (data) => {
+          await this.setup()
+          this.closeDeteleDialog()
+        }
       })
-      this.closeDeteleDialog()
-      await this.setup()
     },
     openDeleteDialog(item) {
       this.selectedItem = item
@@ -138,17 +158,21 @@ export default {
       this.deleteDialog = false
     },
     async setup() {
-      this.items = []
-      const response = await axios.get(`${BASE_URL}/private/users`)
-      response.data.content.users.forEach(user => {
-        this.items.push({
-          id: user.id,
-          name: user.name,
-          nip: user.nip,
-          email: user.email,
-          role: user.role,
-          is_verified: user.is_verified
-        })
+      this.safeCallApi({
+        apiCall: axios.get(`${BASE_URL}/private/users`),
+        onSuccess: ({ content, error }) => {
+            this.items = []
+            content.users.forEach(user => {
+            this.items.push({
+              id: user.id,
+              name: user.name,
+              nip: user.nip,
+              email: user.email,
+              role: user.role,
+              is_verified: (user.is_verified) ? "Sudah" : "Belum"
+            })
+          })
+        }
       })
     }
   },

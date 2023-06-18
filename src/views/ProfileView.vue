@@ -10,6 +10,13 @@
           color="error"
           @click="logout"
         >Logout</v-btn>
+        <br>
+        <v-progress-circular
+          v-show="isLoading"
+          indeterminate
+          color="primary"
+          class="mt-3"
+        ></v-progress-circular>
       </v-col>
     </v-row>
   </v-container>
@@ -18,9 +25,11 @@
 <script>
 import axios from 'axios'
 import { BASE_URL } from '../utils'
+import { utils } from '../mixins'
 
 export default {
   name: 'ProfileView',
+  mixins: [utils],
   data() {
     return {
       name: '',
@@ -30,12 +39,14 @@ export default {
   },
   methods: {
     async logout() {
+      this.$store.dispatch('process/showProcess')
       try {
         this.$store.dispatch('user/reset')
         await axios.post(`${BASE_URL}/auth/logout`)
       } catch (error) {
         console.log(error)
       } finally {
+        this.$store.dispatch('process/removeProcess')
         this.$router.replace({ path: '/login' })
       }
     }

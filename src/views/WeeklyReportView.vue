@@ -30,6 +30,8 @@
       :items="itemsForTable"
       :items-per-page="10"
       :search="search"
+      :loading="isLoading"
+      loading-text="Memuat data..."
       class="elevation-1">
     </v-data-table>
   </div>
@@ -39,11 +41,12 @@
 import axios from "axios"
 import { format } from "date-fns"
 import jsPDF from 'jspdf'
-import { BASE_URL, getFirstDateOfWeek, getLastDateOfWeek } from "../utils"
+import { utils } from '@/mixins'
+import { BASE_URL, getFirstDateOfWeek, getLastDateOfWeek, formatDate } from "../utils"
 
 export default {
   name: 'WeeklyReportView',
-
+  mixins: [utils],
   data() {
     return {
       headers: [
@@ -94,23 +97,26 @@ export default {
     const start = format(firstDateOfWeek, "dd/MM/yyyy")
     const end = format(lastDateOfWeek, "dd/MM/yyyy")
 
-    const response = await axios.get(`${BASE_URL}/private/logs`, {
-      params: {
-        start,
-        end
+    this.safeCallApi({
+      apiCall: axios.get(`${BASE_URL}/private/logs`, {
+        params: {
+          start,
+          end
+        }
+      }),
+      onSuccess: ({ content, error }) => {
+          content.logs.forEach(log => {
+          this.items.push({
+            id: log.id,
+            type: log.type,
+            mac: log.bleDevice.mac,
+            name: log.bleDevice.name,
+            majorMinor: `${log.bleDevice.major}/${log.bleDevice.minor}`,
+            username: log.user.name,
+            date: formatDate(log.date)
+          })
+        })
       }
-    })
-
-    response.data.content.logs.forEach(log => {
-      this.items.push({
-        id: log.id,
-        type: log.type,
-        mac: log.bleDevice.mac,
-        name: log.bleDevice.name,
-        majorMinor: `${log.bleDevice.major}/${log.bleDevice.minor}`,
-        username: log.user.name,
-        date: log.date
-      })
     })
   }
 };

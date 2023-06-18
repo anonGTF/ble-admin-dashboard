@@ -30,6 +30,8 @@
       :items="itemsForTable"
       :items-per-page="10"
       :search="search"
+      :loading="isLoading"
+      loading-text="Memuat data..."
       class="elevation-1">
     </v-data-table>
   </div>
@@ -38,11 +40,12 @@
 <script>
 import axios from "axios";
 import jsPDF from 'jspdf'
+import { utils } from '@/mixins'
 import { BASE_URL } from "../utils";
 
 export default {
   name: 'AllDataView',
-
+  mixins: [utils],
   data() {
     return {
       headers: [
@@ -87,17 +90,20 @@ export default {
   },
 
   async mounted() {
-    console.log(axios.defaults);
-    const response = await axios.get(`${BASE_URL}/private/devices`)
-    response.data.content.devices.forEach(device => {
-      this.items.push({
-        id: device.id,
-        mac: device.mac,
-        name: device.name,
-        major: device.major,
-        minor: device.minor,
-        rackNo: device.rack_no,
-      })
+    await this.safeCallApi({
+      apiCall: axios.get(`${BASE_URL}/private/devices`),
+      onSuccess: ({ content, error }) => {
+          content.devices.forEach(device => {
+          this.items.push({
+            id: device.id,
+            mac: device.mac,
+            name: device.name,
+            major: device.major,
+            minor: device.minor,
+            rackNo: device.rack_no,
+          })
+        })
+      }
     })
   }
 };
